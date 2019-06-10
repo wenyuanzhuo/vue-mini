@@ -97,7 +97,7 @@ Compile.prototype = {
     });
   },
   updateText: function (node, value) {
-    node.textContent = typeof value == 'undefined' ? '' : node.textContent.replace( /\{\{(.*)\}\}/, value);
+    node.textContent = typeof value == 'undefined' ? '' : value;
   },
   modelUpdater: function(node, value) {
       node.value = typeof value == 'undefined' ? '' : value;
