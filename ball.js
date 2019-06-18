@@ -2,8 +2,8 @@ const ballTypeInfo = {
   'step': {
     id: 'ball_step',
     classname: 'step init',
-    invite: {},
-    run: null,
+    invite: { step: { run: 11 } },
+    run: 0,
     title: '微信运动',
     type: 'step',
     animationData: '',
@@ -11,8 +11,8 @@ const ballTypeInfo = {
   'sign': {
     id: 'ball_sign',
     classname: 'sign init',
-    invite: {},
-    run: null,
+    invite: { step: { run: 333 } },
+    run: 0,
     title: '每日签到',
     type: 'sign',
     animationData: ''
@@ -27,26 +27,89 @@ const ballType = {
   'sign': {
     run: 2000,
     show: true
+  },
+  'task': {
+    show: true,
+    data: []
   }
 }
 
 const ballList = []
 
 function ballPush (type, obj) {
+  if (!obj.show) {
+    return
+  }
   const result = JSON.parse(JSON.stringify(ballTypeInfo))
   const ball = result[type]
+  
+  if (obj.data && obj.data.constructor === Array) {
+    obj.forEach(tmp => {
+      for (let key in tmp) {
+        ball[key] = tmp[key]
+      }
+      ballList.push(ball)
+    })
+    return
+  }
+
   for (let key in obj) {
     ball[key] = obj[key]
   }
-  console.log(ball)
-  if (obj.show) {
-    ballList.push(ball)
-  }
+  ballList.push(ball)
   return
 }
 
-Object.keys(ballType).forEach((item => {
-  ballPush(item, ballType[item])
-}))
-console.log('-------', ballList)
-// const nextBall = ballList.filter(res => res.show)
+// Object.keys(ballType).forEach((item => {
+//   ballPush(item, ballType[item])
+// }))
+
+function deepCopy(obj) {
+  const resObj = Object.prototype.toString.call(obj) === '[object Aarry]' ? [] : {}
+  if (typeof obj === 'object') {
+    for(key in obj) {
+      if (typeof obj[key] === 'object') {
+        resObj[key] = deepCopy(obj[key])
+      } else {
+        resObj[key] = obj[key]
+      }
+    }
+  }
+  return resObj
+}
+
+// const ballNext = deepCopy(ballTypeInfo)
+// ballTypeInfo.step.run = 1000
+// console.log(ballNext)
+
+let res = 0, value = 0
+function deepLength(obj, i = 0) {
+  let resObj = {}
+  if (typeof obj === 'object') {
+    for(key in obj) {
+      if (typeof obj[key] === 'object') {
+        deepLength(obj[key], i + 1 )
+      } else {
+        if( i + 1 > res) {
+          value = obj[key]
+        }
+        res = i + 1 > res ? i + 1 : res;
+        // if (i > old) {
+        //   resObj = {
+        //     deep: length,
+        //     value: obj[key]
+        //   }
+        // }
+        // old++
+      }
+    }
+
+  } else {
+    res = i > res ? i : res;
+  }
+
+  return resObj
+}
+const ballNext = deepLength(ballTypeInfo)
+console.log('--', res, value)
+// console.log('===', ballNext)
