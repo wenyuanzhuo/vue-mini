@@ -94,8 +94,10 @@ function deepLength(obj, i = 0) {
             num: i + 1,
             value: { [key]: obj[key]},
           }
+          res = i + 1
+          return
         }
-        res = i + 1 > res ? i + 1 : res;
+        res = res;
       }
     }
 
